@@ -1,0 +1,399 @@
+/* =============================================
+   TIC TAC TOE — Dark Grid Edition
+   Font: Share Tech Mono
+   Palette: #101020 / #121224 · Cream-gold
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+/* ─── Reset ────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Variables ────────────────────────────── */
+:root {
+  --bg-dark:    #101020;
+  --bg-light:   #121224;
+  --grid-size:  47px;
+
+  --line:       #e8dfa0;
+  --text:       #e8dfa0;
+  --text-dim:   rgba(232, 223, 160, 0.4);
+  --cell-hover: rgba(232, 223, 160, 0.055);
+  --cell-size:  120px;
+  --border:     2px solid var(--line);
+}
+
+/* ─── Body ─────────────────────────────────── */
+body {
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  background-image: conic-gradient(
+    var(--bg-light) 90deg,
+    var(--bg-dark)  90deg 180deg,
+    var(--bg-light) 180deg 270deg,
+    var(--bg-dark)  270deg
+  );
+  background-size: calc(var(--grid-size) * 2) calc(var(--grid-size) * 2);
+
+  animation: bgScroll 4s linear infinite;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--text);
+  overflow: hidden;
+}
+
+@keyframes bgScroll {
+  from { background-position: 0 0; }
+  to   { background-position: calc(var(--grid-size) * 2) calc(var(--grid-size) * 2); }
+}
+
+/* ─── Shared: screen wrappers ──────────────── */
+.app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   MENU SCREEN
+   ═══════════════════════════════════════════ */
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.menu h1 {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+/*
+  Menu nav buttons styled exactly like the screenshot:
+  ► Play ◄  with triangles flanking the label.
+  We use ::before / ::after for the triangles so the
+  text itself stays centered.
+*/
+.menu-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text);
+
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+
+  padding: 0.2em 0;
+  transition: color 0.15s;
+  user-select: none;
+}
+
+.menu-btn::before { content: '▶'; font-size: 0.7em; opacity: 0; transition: opacity 0.15s; }
+.menu-btn::after  { content: '◀'; font-size: 0.7em; opacity: 0; transition: opacity 0.15s; }
+
+.menu-btn:hover::before,
+.menu-btn:hover::after {
+  opacity: 1;
+}
+
+/* Active selected state (e.g. focused via keyboard) */
+.menu-btn:focus-visible {
+  outline: none;
+}
+.menu-btn:focus-visible::before,
+.menu-btn:focus-visible::after {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════
+   SETTINGS SCREEN
+   ═══════════════════════════════════════════ */
+.settings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.2rem;
+}
+
+.settings h2 {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.settings-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.settings-label {
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* Arrow toggle: ◄ VALUE ► */
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.toggle-arrow {
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+  color: var(--text);
+  padding: 0 0.15em;
+  line-height: 1;
+
+  transition: opacity 0.15s;
+  user-select: none;
+}
+
+.toggle-arrow:hover  { opacity: 0.6; }
+.toggle-arrow:active { opacity: 0.35; }
+
+.toggle-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  letter-spacing: 0.1em;
+  color: var(--text);
+  min-width: 3.5em;
+  text-align: center;
+}
+
+/* Back button */
+.back-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+
+  padding: 0.2em 0;
+  margin-top: 0.5rem;
+  transition: color 0.15s;
+}
+
+.back-btn::before { content: '◀'; font-size: 0.75em; }
+.back-btn:hover   { color: var(--text); }
+
+/* ═══════════════════════════════════════════
+   GAME SCREEN
+   ═══════════════════════════════════════════ */
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.game h1 {
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text);
+  font-weight: normal;
+}
+
+/* ─── Status ───────────────────────────────── */
+.status {
+  font-size: clamp(0.75rem, 2vw, 1rem);
+  letter-spacing: 0.15em;
+  color: var(--text);
+  min-height: 1.5em;
+  text-align: center;
+}
+
+.status.draw { color: var(--text-dim); }
+.status.win  { color: var(--text); }
+
+/* ─── Board ────────────────────────────────── */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, var(--cell-size));
+  grid-template-rows:    repeat(3, var(--cell-size));
+}
+
+/* ─── Cells ────────────────────────────────── */
+.cell {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+
+  width:  var(--cell-size);
+  height: var(--cell-size);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background-color 0.15s ease;
+}
+
+/* Inner grid lines only */
+.cell:nth-child(3n+1),
+.cell:nth-child(3n+2) { border-right: var(--border); }
+
+.cell:nth-child(1),
+.cell:nth-child(2),
+.cell:nth-child(3),
+.cell:nth-child(4),
+.cell:nth-child(5),
+.cell:nth-child(6) { border-bottom: var(--border); }
+
+.cell:hover:not(:disabled):not(.cell--x):not(.cell--o) {
+  background-color: var(--cell-hover);
+}
+
+.cell:disabled { cursor: default; }
+
+/* Symbol in ::after so borders never animate */
+.cell::after {
+  content: attr(data-symbol);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 3.5rem;
+  color: var(--text);
+  line-height: 1;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes popIn {
+  0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  65%  { transform: translate(-50%, -50%) scale(1.12); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+}
+
+.cell--x::after,
+.cell--o::after {
+  animation: popIn 0.2s ease-out forwards;
+}
+
+/* ─── Menu button (in-game) ────────────────── */
+#menu {
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  transition: color 0.15s;
+}
+
+#menu::before { content: '◀'; font-size: 0.75em; }
+#menu:hover   { color: var(--text); }
+
+/* ─── Responsive ───────────────────────────── */
+@media (max-width: 420px) {
+  :root { --cell-size: 90px; }
+  .cell::after { font-size: 2.6rem; }
+}
+
+/* ─── Game buttons row ─────────────────────── */
+.game-btns {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* ─── Retry button ─────────────────────────── */
+.retry-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text);
+
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  transition: color 0.15s;
+}
+
+.retry-btn::after { content: '▶'; font-size: 0.75em; }
+.retry-btn:hover  { color: var(--text-dim); }
+
+.retry-btn.hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
