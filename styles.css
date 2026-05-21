@@ -83,7 +83,7 @@ body {
 }
 
 /*
-  Menu nav buttons styled exactly like the screenshot:
+  Menu nav buttons styled exactly like this:
   ► Play ◄  with triangles flanking the label.
   We use ::before / ::after for the triangles so the
   text itself stays centered.

@@ -44,7 +44,7 @@ function makeToggle(options, current, onChange) {
 
   const prev = document.createElement("button");
   prev.className = "toggle-arrow";
-  prev.textContent = "◄";
+  prev.textContent = "◀";
 
   const val = document.createElement("span");
   val.className = "toggle-value";
@@ -52,7 +52,7 @@ function makeToggle(options, current, onChange) {
 
   const next = document.createElement("button");
   next.className = "toggle-arrow";
-  next.textContent = "►";
+  next.textContent = "▶";
 
   let idx = options.indexOf(current);
 
