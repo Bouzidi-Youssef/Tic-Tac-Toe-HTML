@@ -6,14 +6,7 @@ A lightweight, zero-dependency Tic Tac Toe game built with vanilla JavaScript (E
 
 ## Preview
 
-```
-┌─────────────────────────────┐
-│       TIC  TAC  TOE         │
-│                             │
-│    ► Play ◄                 │
-│      Settings               │
-└─────────────────────────────┘
-```
+![Tic Tac Toe Game](assets/images/preview.png)
 
 ---
 
